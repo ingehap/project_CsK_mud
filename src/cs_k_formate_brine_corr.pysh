@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+# When referencing Geolog variables in a Python script, names must always be lower case.
+
+## References
+#
+#  Berg et al.
+#  "Drilling, Completion, and Openhole Formation Evaluation of High-Angle Wells in 
+#  High-Density Cesium Formate Brine: The Kvitebjørn Experience, 2004 - 2006"
+#  SPE/IADC 105733
+#
+#  Pedersen et al.
+#  "Understanding the Effects of Cesium/Potassium Formate Fluid on Well Log Response - 
+#  A Case Study of the Kristion and Kvitebjorn Fields, Offshore Norway"
+#  SPE 103067
+#
+#  Petrophysical reports in Kvitebjørn for paricular wells based on the CsK Format-mud:
+#  1. Sandrine Donnadieu, "34/11-A-12 Data Acquisition & Formation Evaluation November 2007"
+#  2. Gjøril Mongstad Myhr, "Acquisition & Formation Evaluation Report, Well: 34/11-A-15, Section: 17.5''-12.25''-8.5''"
+#  Comments to petrophysical reports:
+#  A. No 1 is based on Ecoscope density, while no 2 is based on ADN density
+#  B. From the relation PEF = PHIT * SXO * C + Pe_lith we always have the inequality PEF – Pe_lith <= C, where equality appears in rat holes.
+#  C. ADN tool: RHOB_CORR_CS_GRAD = 0.1714 (SPE 105733), 0.1942 (No 2)
+#  D. Ecoscope tool: RHOB_CORR_CS_GRAD = 0.2879 (No 1)
+
+import geolog
+import numpy as np
+
+while geolog.gettable():
+
+    rhob_corr_cs = lfp_rhob * (1.0 - rhob_corr_cs_grad * (lfp_pef - pe_lith) * 0.01)
+    sxo_cs = (lfp_rhomanc - lfp_rhog)/(rho_mf - lfp_rhog + c * (lfp_rhomanc - rhob_corr_cs)/(lfp_pef - pe_lith))
+    phid_cs = (lfp_rhomanc - rhob_corr_cs)/(lfp_rhomanc - (sxo_cs * rho_mf + (1.0 - sxo_cs) * lfp_rhog))
+    geolog.puttable()
+
+
+
+
+
